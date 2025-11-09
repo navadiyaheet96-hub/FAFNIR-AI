@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fafnir AI</title>
+    <link rel="shortcut icon" href="D:\GChatbot\favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            perspective: 1000px; /* Enables 3D perspective */
+        }
+        .chat-container {
+            width: 100vw; /* Full width for PC */
+            height: 100vh; /* Full height for PC */
+            background: linear-gradient(145deg, #2a2a2a, #3a3a3a);
+            border-radius: 0; /* Remove border radius for full screen */
+            box-shadow: none; /* Remove shadow for seamless full screen */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform-style: preserve-3d; /* Allows 3D transforms on children */
+            animation: floatIn 1s ease-out; /* Initial 3D animation */
+        }
+        @keyframes floatIn {
+            0% {
+                transform: rotateX(90deg) translateZ(-100px);
+                opacity: 0;
+            }
+            100% {
+                transform: rotateX(0deg) translateZ(0px);
+                opacity: 1;
+            }
+        }
+        .chat-header {
+            background: red;
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 24px; /* Slightly larger for full screen */
+            box-shadow: inset 2px 2px 100px 10px rgb(0 0 0);
+            transform: translateZ(10px); /* Slight 3D lift */
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.1);
+            background-image: url('https://wallpapercave.com/wp/wp7510723.jpg');
+            background-size: 90em;
+            background-position-y: -150px;
+            transform: translateZ(0.5deg); /* Base layer for 3D */
+        
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 70%; /* Adjusted for wider screen */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateZ(5px); /* 3D depth */
+            animation: slideIn 0.5s ease-out; /* 3D slide-in animation */
+            font-size: 18px; /* Larger font for full screen */
+        }
+        @keyframes slideIn {
+            0% {
+                transform: translateX(-100%) rotateY(-45deg);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0%) rotateY(0deg);
+                opacity: 1;
+            }
+        }
+        .message.user {
+            background: linear-gradient(145deg, #007bff, #0056b3);
+            align-self: flex-end;
+            transform-origin: right;
+        }
+        .message.bot {
+            background: linear-gradient(145deg, #000000, #7e6b6b);
+            align-self: flex-start;
+            transform-origin: left;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .chat-input {
+            display: flex;
+            padding: 20px;
+            background: linear-gradient(145deg, #333333, #444444);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(145deg, #620d0d, #666666);
+            color: #ffffff;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-size: 18px; /* Larger font */
+        }
+        .chat-input input:focus {
+            transform: scale(1.02);
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+        .chat-input button {
+            margin-left: 15px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            background: Red;
+            color: #ffffff;
+            cursor: pointer;
+            box-shadow: inset 2px 2px 100px 10px rgb(64 21 21);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transform: translateZ(5px); /* 3D depth */
+            font-size: 18px; /* Larger font */
+        }
+        .chat-input button:hover {
+            transform: translateZ(5px) scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        .chat-input button:active {
+            transform: translateZ(5px) scale(0.95); /* 3D press effect */
+        }
+        /* Additional 3D hover effect on container */
+        .chat-container:hover {
+            transform: rotateY(1deg) rotateX(0.5deg); /* Subtle for full screen */
+            transition: transform 0.3s ease;
+        }
+        /* Responsive adjustments: only full screen on larger screens */
+        @media (max-width: 1200px) {
+            .chat-container {
+                width: 90vw;
+                height: 90vh;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                margin: auto;
+            }
+        }
+        .chat-input>button{
+            font-family: 'Times New Roman', Times, serif;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">Fafnir AI</div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot">Hello! I'm Fafnir, built by Heet. How can I help you today?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = 'AIzaSyB8H_n1bbmAmA7Hm1ywBA3Ndb24ZKtJLek';
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${API_KEY}`;
+
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const messages = document.getElementById('chat-messages');
+            const userMessage = input.value.trim();
+            
+            if (userMessage === '') return;
+            
+            // Add user message
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user';
+            userDiv.textContent = userMessage;
+            messages.appendChild(userDiv);
+            
+            // Clear input
+            input.value = '';
+            
+            // Show typing indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.textContent = 'Typing...';
+            messages.appendChild(typingDiv);
+            messages.scrollTop = messages.scrollHeight;
+            
+            try {
+                // Call Gemini API
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: userMessage
+                            }]
+                        }]
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const botResponse = data.candidates[0].content.parts[0].text;
+                
+                // Remove typing indicator and add bot response
+                messages.removeChild(typingDiv);
+                const botDiv = document.createElement('div');
+                botDiv.className = 'message bot';
+                botDiv.textContent = botResponse;
+                messages.appendChild(botDiv);
+            } catch (error) {
+                console.error('Error:', error);
+                // Remove typing indicator and show error
+                messages.removeChild(typingDiv);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'message bot';
+                errorDiv.textContent = 'Sorry, I encountered an error. Please try again.';
+                messages.appendChild(errorDiv);
+            }
+            
+            messages.scrollTop = messages.scrollHeight;
+        }
+        
+        // Allow sending message on Enter key
+        document.getElementById('user-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
